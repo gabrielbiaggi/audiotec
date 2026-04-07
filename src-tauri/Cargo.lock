@@ -132,6 +132,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 
 [[package]]
+name = "asio-sys"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "826194e1612938c9be09b78b58323fbb2e326de3d491b4230186cf6e832d8ded"
+dependencies = [
+ "bindgen",
+ "cc",
+ "num-derive",
+ "num-traits",
+ "parse_cfg",
+ "walkdir",
+]
+
+[[package]]
 name = "atk"
 version = "0.18.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -169,7 +183,7 @@ dependencies = [
  "env_logger",
  "log",
  "num-complex",
- "ringbuf",
+ "rtrb",
  "rusqlite",
  "rustfft",
  "serde",
@@ -208,6 +222,8 @@ dependencies = [
  "cexpr",
  "clang-sys",
  "itertools",
+ "log",
+ "prettyplease",
  "proc-macro2",
  "quote",
  "regex",
@@ -555,6 +571,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "873dab07c8f743075e57f524c583985fbaf745602acbe916a01539364369a779"
 dependencies = [
  "alsa",
+ "asio-sys",
  "core-foundation-sys",
  "coreaudio-rs",
  "dasp_sample",
@@ -564,6 +581,7 @@ dependencies = [
  "mach2",
  "ndk 0.8.0",
  "ndk-context",
+ "num-traits",
  "oboe",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -2617,6 +2635,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "parse_cfg"
+version = "4.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "905787a434a2c721408e7c9a252e85f3d93ca0f118a5283022636c0e05a7ea49"
+dependencies = [
+ "nom",
+]
+
+[[package]]
 name = "pathdiff"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3206,15 +3233,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "ringbuf"
-version = "0.4.8"
+name = "rtrb"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe47b720588c8702e34b5979cb3271a8b1842c7cb6f57408efa70c779363488c"
-dependencies = [
- "crossbeam-utils",
- "portable-atomic",
- "portable-atomic-util",
-]
+checksum = "7204ed6420f698836b76d4d5c2ec5dec7585fd5c3a788fd1cde855d1de598239"
 
 [[package]]
 name = "rusqlite"

@@ -21,13 +21,17 @@ serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 
 # --- Audio I/O (ASIO on Windows, CoreAudio on macOS, ALSA on Linux) ---
+# On Windows with 'asio' feature, cpal will attempt ASIO host first for
+# low-latency direct routing from digital consoles (e.g. Behringer X32 USB).
 cpal = "0.15"
 
 # --- DSP / Math ---
 rustfft = "6.2"
 
 # --- Lock-free ring buffer for real-time audio pipeline ---
-ringbuf = "0.4"
+# rtrb is a bounded, lock-free SPSC ring buffer designed for real-time use.
+# It never allocates in push/pop and is safe for the audio callback.
+rtrb = "0.3"
 
 # --- Database ---
 rusqlite = { version = "0.31", features = ["bundled"] }
@@ -43,6 +47,9 @@ crossbeam-channel = "0.5"
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
+# Enable ASIO host on Windows for professional audio interfaces.
+# Requires the ASIO SDK to be present at build time.
+asio = ["cpal/asio"]
 
 [profile.release]
 lto = true

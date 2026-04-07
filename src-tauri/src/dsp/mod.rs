@@ -5,10 +5,6 @@ pub mod windowing;
 /// 4096 samples @ 48kHz ≈ 85ms window → ~11.7 Hz bin resolution.
 pub const DEFAULT_FFT_SIZE: usize = 4096;
 
-/// Maximum number of frequency bins sent to the frontend.
-/// Equal to FFT_SIZE / 2 (Nyquist).
-pub const MAX_SPECTRUM_BINS: usize = DEFAULT_FFT_SIZE / 2;
-
 /// Supported DSP processing modes — each future module plugs in here.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum DspMode {

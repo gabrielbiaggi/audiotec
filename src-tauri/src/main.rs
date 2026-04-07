@@ -74,8 +74,40 @@ fn is_engine_running(state: tauri::State<'_, Mutex<AppState>>) -> bool {
 
 // ─── Spectrum event forwarder ───────────────────────────────────────────
 
+/// Serialises [`SpectrumData`] to a flat `Vec<u8>` of little-endian `f32` values.
+///
+/// Wire format (all f32, LE):
+///   [sampleRate, fftSize, ...frequencies, ...magnitudeRef, ...magnitudeMeas,
+///    ...transferMagnitude, ...transferPhase, ...coherence]
+///
+/// Total length: `(2 + 6 * binCount) * 4` bytes.
+fn spectrum_to_binary(data: &SpectrumData) -> Vec<u8> {
+    let bin_count = data.frequencies.len();
+    let total_floats = 2 + 6 * bin_count;
+    let mut buf = Vec::with_capacity(total_floats * 4);
+
+    buf.extend_from_slice(&(data.sample_rate).to_le_bytes());
+    buf.extend_from_slice(&(data.fft_size as f32).to_le_bytes());
+
+    for slice in [
+        &data.frequencies,
+        &data.magnitude_ref,
+        &data.magnitude_meas,
+        &data.transfer_magnitude,
+        &data.transfer_phase,
+        &data.coherence,
+    ] {
+        for &v in slice.iter() {
+            buf.extend_from_slice(&v.to_le_bytes());
+        }
+    }
+
+    buf
+}
+
 /// Reads processed spectrum data from the DSP thread's channel and emits
-/// it to the frontend as `spectrum-data` events.
+/// it to the frontend as both `spectrum-data` (JSON) and `audio-frame`
+/// (binary) events.
 ///
 /// Runs on the Tauri async runtime (tokio), NOT on the audio thread.
 /// Throttled inherently by the DSP thread's emission rate (~60 fps).
@@ -83,6 +115,11 @@ async fn spectrum_forwarder(app: AppHandle, rx: Receiver<SpectrumData>) {
     loop {
         match rx.recv_timeout(Duration::from_millis(100)) {
             Ok(data) => {
+                // Binary path — zero-copy Float32Array on the JS side
+                let binary = spectrum_to_binary(&data);
+                let _ = app.emit("audio-frame", binary);
+
+                // JSON path — kept for backward compatibility
                 if let Err(e) = app.emit("spectrum-data", &data) {
                     log::error!("Failed to emit spectrum event: {e}");
                     break;
