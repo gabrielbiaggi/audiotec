@@ -86,3 +86,136 @@ export const PAD_LEFT = 52;
 export const PAD_RIGHT = 14;
 export const PAD_TOP = 8;
 export const PAD_BOTTOM = 24;
+
+// ─── Simulation config ──────────────────────────────────────────────
+
+export type SimSignalType = "pinkNoise" | "whiteNoise" | "sineSweep" | "multiTone";
+
+export const SIM_SIGNAL_OPTIONS: { value: SimSignalType; label: string }[] = [
+  { value: "pinkNoise", label: "Ruído Rosa" },
+  { value: "whiteNoise", label: "Ruído Branco" },
+  { value: "sineSweep", label: "Varredura Senoidal" },
+  { value: "multiTone", label: "Multi-Tom" },
+];
+
+export interface SimConfig {
+  signalType: SimSignalType;
+  fftSize?: number;
+  sampleRate?: number;
+  numAverages?: number;
+  amplitude?: number;
+  delaySamples?: number;
+  noiseLevel?: number;
+}
+
+// ─── Wave calculator types (matches Rust wave_calc.rs) ──────────────
+
+export interface WaveCalcRequest {
+  frequencyHz: number;
+  distanceM: number;
+  temperatureC: number;
+}
+
+export interface WaveCalcResult {
+  speedOfSound: number;
+  wavelengthM: number;
+  wavelengthFt: number;
+  delayMs: number;
+  delaySamples48k: number;
+  delaySamples96k: number;
+  cyclesInDistance: number;
+}
+
+// ─── Room modes types (matches Rust room_modes.rs) ──────────────────
+
+export interface RoomModesRequest {
+  length: number;
+  width: number;
+  height: number;
+  temperatureC: number;
+  maxFrequency: number;
+  maxOrder: number;
+}
+
+export type ModeType = "axial" | "tangential" | "oblique";
+
+export interface RoomMode {
+  frequency: number;
+  nx: number;
+  ny: number;
+  nz: number;
+  modeType: ModeType;
+  wavelengthM: number;
+}
+
+export interface RoomModesResult {
+  modes: RoomMode[];
+  speedOfSound: number;
+  schroederFrequency: number;
+  volume: number;
+  boltRatio: number[];
+}
+
+// ─── Spatial average types (matches Rust spatial_average.rs) ────────
+
+export interface StoredTrace {
+  label: string;
+  frequencies: number[];
+  magnitudeDb: number[];
+  phaseDeg: number[];
+  coherence: number[];
+}
+
+export interface SpatialAverageResult {
+  frequencies: number[];
+  magnitudeDb: number[];
+  phaseDeg: number[];
+  coherence: number[];
+  numTraces: number;
+}
+
+// ─── Auto-EQ types (matches Rust auto_eq.rs) ────────────────────────
+
+export interface PeqBand {
+  frequency: number;
+  gainDb: number;
+  q: number;
+  bandwidthOct: number;
+}
+
+export interface AutoEqRequest {
+  frequencies: number[];
+  measuredDb: number[];
+  targetDb: number[];
+  maxBoostDb?: number;
+  thresholdDb?: number;
+  maxBands?: number;
+  smoothingResolution?: number;
+}
+
+export interface AutoEqResult {
+  bands: PeqBand[];
+  smoothedMeasuredDb: number[];
+  predictedDb: number[];
+  rmsErrorBefore: number;
+  rmsErrorAfter: number;
+}
+
+// ─── OSC client types (matches Rust osc_client.rs) ──────────────────
+
+export interface OscConfig {
+  host: string;
+  port: number;
+}
+
+export interface OscStatus {
+  connected: boolean;
+  host: string;
+  port: number;
+  lastError: string | null;
+}
+
+export interface OscEqTarget {
+  targetType: string;
+  number: number;
+}
