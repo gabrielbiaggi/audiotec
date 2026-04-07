@@ -183,6 +183,7 @@ dependencies = [
  "env_logger",
  "log",
  "num-complex",
+ "rosc",
  "rtrb",
  "rusqlite",
  "rustfft",
@@ -3230,6 +3231,16 @@ dependencies = [
  "wasm-bindgen-futures",
  "wasm-streams",
  "web-sys",
+]
+
+[[package]]
+name = "rosc"
+version = "0.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2aca3e6d1ffaf6cf03d478224517690393ac55fca32f63711fa152692bff4ff"
+dependencies = [
+ "byteorder",
+ "nom",
 ]
 
 [[package]]

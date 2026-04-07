@@ -30,6 +30,7 @@ function viewLabel(mode: ViewMode): string {
     case "phase":     return "FASE -- graus";
     case "impulse":   return "RESPOSTA AO IMPULSO -- ms";
     case "coherence": return "COERENCIA";
+    default:          return mode;
   }
 }
 

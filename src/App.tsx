@@ -9,12 +9,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import type { AudioDeviceInfo, EngineConfig, ViewMode } from "./types";
+import type { AudioDeviceInfo, EngineConfig, StoredTrace, ViewMode } from "./types";
 import { useSpectrumEvent } from "./hooks/useTauriEvent";
 import MainLayout from "./layout/MainLayout";
 import DataBar from "./components/DataBar";
 import GraphArea from "./components/GraphArea";
 import ControlBar from "./components/ControlBar";
+import Header from "./components/Header";
+import ToolsDrawer from "./components/ToolsDrawer";
 
 export default function App() {
   // ── Spectrum data via ref (bypasses React VDOM) ───────────────
@@ -37,6 +39,14 @@ export default function App() {
   const [showRef, setShowRef] = useState(true);
   const [showMeas, setShowMeas] = useState(true);
   const [showCoherence, setShowCoherence] = useState(true);
+
+  // ── UI state ──────────────────────────────────────────────────
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [toolsOpen, setToolsOpen] = useState(false);
+
+  // ── Tools drawer state ────────────────────────────────────────
+  const [storedTraces] = useState<StoredTrace[]>([]);
+  const [oscConnected, setOscConnected] = useState(false);
 
   // ── Load devices on mount ─────────────────────────────────────
   useEffect(() => {
@@ -84,21 +94,41 @@ export default function App() {
     onToggleCoh: () => setShowCoherence((p) => !p),
   });
 
+  // ── Extract live frequency/magnitude arrays for ToolsDrawer ──
+  const liveFrequencies = spectrumRef.current?.frequencies ?? [];
+  const liveMeasuredDb = spectrumRef.current?.magnitudeMeas ?? [];
+
   // ── Render ────────────────────────────────────────────────────
   return (
     <MainLayout
-      sidebar={
-        <DataBar
+      header={
+        <Header
+          sidebarOpen={sidebarOpen}
+          onToggleSidebar={() => setSidebarOpen((p) => !p)}
           viewMode={viewMode}
-          traces={traces}
-          deviceInfo={devices.find((d) => d.name === selectedDevice) ?? null}
+          onViewModeChange={setViewMode}
           running={running}
           fps={fps}
-          sampleRate={sampleRate}
-          fftSize={fftSize}
+          cursorFreq=""
+          cursorDb=""
+          toolsOpen={toolsOpen}
+          onToggleTools={() => setToolsOpen((p) => !p)}
         />
       }
-      graph={
+      sidebar={
+        sidebarOpen ? (
+          <DataBar
+            viewMode={viewMode}
+            traces={traces}
+            deviceInfo={devices.find((d) => d.name === selectedDevice) ?? null}
+            running={running}
+            fps={fps}
+            sampleRate={sampleRate}
+            fftSize={fftSize}
+          />
+        ) : null
+      }
+      viewport={
         <GraphArea
           spectrumRef={spectrumRef}
           viewMode={viewMode}
@@ -129,6 +159,20 @@ export default function App() {
           onViewModeChange={setViewMode}
         />
       }
+      toolsDrawer={
+        toolsOpen ? (
+          <ToolsDrawer
+            open={toolsOpen}
+            onClose={() => setToolsOpen(false)}
+            frequencies={liveFrequencies}
+            measuredDb={liveMeasuredDb}
+            storedTraces={storedTraces}
+            oscConnected={oscConnected}
+            onOscStatusChange={(connected) => setOscConnected(connected)}
+            spectrumRef={spectrumRef}
+          />
+        ) : null
+      }
     />
   );
 }
@@ -149,14 +193,14 @@ function buildTraces(
   const list: { id: string; label: string; color: string; visible: boolean; onToggle: () => void }[] = [];
 
   if (mode === "spectrum") {
-    list.push({ id: "ref", label: "Referência (CH1)", color: "#00e5ff", visible: showRef, onToggle: handlers.onToggleRef });
-    list.push({ id: "meas", label: "Medição (CH2)", color: "#eeff41", visible: showMeas, onToggle: handlers.onToggleMeas });
+    list.push({ id: "ref",  label: "Referência (CH1)", color: "#00e5ff",               visible: showRef,  onToggle: handlers.onToggleRef  });
+    list.push({ id: "meas", label: "Medição (CH2)",    color: "#eeff41",               visible: showMeas, onToggle: handlers.onToggleMeas });
   } else if (mode === "transfer") {
-    list.push({ id: "tf", label: "Transferência H1", color: "#00e5ff", visible: true, onToggle: () => {} });
-    list.push({ id: "coh", label: "Coerência γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
+    list.push({ id: "tf",  label: "Transferência H1", color: "#00e5ff",                visible: true,     onToggle: () => {}              });
+    list.push({ id: "coh", label: "Coerência γ²",     color: "rgba(139,92,246,0.75)", visible: showCoh,  onToggle: handlers.onToggleCoh  });
   } else {
-    list.push({ id: "phase", label: "Fase (graus)", color: "#ff4081", visible: true, onToggle: () => {} });
-    list.push({ id: "coh", label: "Coerência γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
+    list.push({ id: "phase", label: "Fase (graus)",   color: "#ff4081",                visible: true,     onToggle: () => {}              });
+    list.push({ id: "coh",   label: "Coerência γ²",   color: "rgba(139,92,246,0.75)", visible: showCoh,  onToggle: handlers.onToggleCoh  });
   }
 
   return list;
