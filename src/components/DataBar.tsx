@@ -85,7 +85,7 @@ export default function DataBar({
 
         {/* View mode */}
         <div className="text-text-muted uppercase tracking-wider">
-          {viewMode === "spectrum" ? "Spectrum" : viewMode === "transfer" ? "Transfer Fn" : "Phase"}
+          {viewMode === "spectrum" ? "Espectro" : viewMode === "transfer" ? "Trans. Fn." : viewMode === "impulse" ? "Impulso" : viewMode === "coherence" ? "Coerência" : "Fase"}
         </div>
       </div>
     </aside>

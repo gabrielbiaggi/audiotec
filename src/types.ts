@@ -49,7 +49,7 @@ export interface EngineConfig {
 
 // ─── View types ─────────────────────────────────────────────────────
 
-export type ViewMode = "spectrum" | "transfer" | "phase";
+export type ViewMode = "spectrum" | "transfer" | "phase" | "impulse" | "coherence";
 
 export type SignalGenType = "off" | "pink" | "white" | "sine";
 

@@ -4,14 +4,8 @@
  * Layout: [VU Meters | I/O & Config | Transport | System Telemetry | Delay Engine]
  */
 
-import type { AudioDeviceInfo, ViewMode, SimSignalType } from "../types";
-import {
-  FFT_SIZES,
-  WINDOW_TYPES,
-  AVERAGING_OPTIONS,
-  SAMPLE_RATES,
-  SIM_SIGNAL_OPTIONS,
-} from "../types";
+import type { AudioDeviceInfo, SimSignalType } from "../types";
+import { SIM_SIGNAL_OPTIONS } from "../types";
 
 interface ControlDeskProps {
   running: boolean;
@@ -33,8 +27,6 @@ interface ControlDeskProps {
   onNumAveragesChange: (n: number) => void;
   sampleRate: number;
   onSampleRateChange: (r: number) => void;
-  viewMode: ViewMode;
-  onViewModeChange: (m: ViewMode) => void;
 }
 
 export default function ControlDesk({
@@ -50,137 +42,123 @@ export default function ControlDesk({
   selectedDevice,
   onDeviceChange,
   fftSize,
-  onFftSizeChange,
-  windowType,
-  onWindowTypeChange,
-  numAverages,
-  onNumAveragesChange,
   sampleRate,
-  onSampleRateChange,
 }: ControlDeskProps) {
-  const deviceInfo = devices.find((d) => d.name === selectedDevice);
 
   return (
-    <footer className="flex items-stretch h-[96px] bg-bg-panel border-t border-border-default select-none shrink-0 overflow-hidden">
-      {/* ── VU Meters ── */}
-      <div className="flex items-center gap-2 px-5 border-r border-border-default">
-        <VuMeter label="L" level={running ? 0.45 : 0} />
-        <VuMeter label="L" level={running ? 0.45 : 0} />
-        <VuMeter label="R" level={running ? 0.55 : 0} />
+    <footer className="flex items-center justify-between h-14 bg-zinc-950 border-t border-zinc-800 px-2 select-none shrink-0 overflow-hidden z-50">
+      {/* ── VU Meters & I/O ── */}
+      <div className="flex items-center gap-4 w-[25%]">
+        <div className="flex gap-1 h-10 px-1 border-r border-zinc-800 mr-2">
+          <VuMeter level={running || simulating ? 0.70 : 0} />
+          <VuMeter level={running || simulating ? 0.45 : 0} />
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <DeskLabel>Input 1</DeskLabel>
+              <select
+                value={selectedDevice}
+                onChange={(e) => onDeviceChange(e.target.value)}
+                disabled={running}
+                className="bg-black border border-zinc-800 px-2 h-6 text-[9px] font-mono text-zinc-400 outline-none min-w-[80px] rounded-sm
+                           disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {devices.map((d) => (
+                  <option key={d.name} value={d.name}>{d.name}</option>
+                ))}
+                {devices.length === 0 && <option>—</option>}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <DeskLabel>Ref</DeskLabel>
+              <div className="bg-black border border-zinc-800 px-2 h-6 flex items-center min-w-[80px] rounded-sm">
+                <span className="text-[9px] font-mono text-zinc-400">INT_L</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ── I/O Config ── */}1 px-5 py-1
-      <div className="flex flex-col justify-center gap-1 px-5 py-1 border-r border-border-default min-w-[180px]">
-        <DeskLabel>Dispositivo I/O</DeskLabel>
-        <select
-          value={selectedDevice}
-          onChange={(e) => onDeviceChange(e.target.value)}
-          disabled={running}
-          className="bg-black text-text-primary border border-border-default rounded
-                     px-1.5 py-0.5 text-[10px] font-mono outline-none truncate
-                     disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {devices.map((d) => (
-            <option key={d.name} value={d.name}>
-              [{d.host}] {d.name} ({d.maxChannels}ch)
-            </option>
-          ))}
-          {devices.length === 0 && <option>Sem dispositivos</option>}
-        </select>
-        {deviceInfo && (
-          <span className="text-[8px] font-mono text-text-muted truncate">
-            {sampleRate / 1000}kHz · {deviceInfo.maxChannels}ch
-          </span>
-        )}
-      </div>
-3 px-5 py-1
-      <div className="flex items-center gap-3 px-5 py-1 border-r border-border-default">
-        <ConfigSelect label="FFT" value={fftSize} onChange={onFftSizeChange} disabled={running}
-          options={FFT_SIZES.map(s => ({ value: s, label: String(s) }))} />
-        <ConfigSelect label="Win" value={windowType} onChange={onWindowTypeChange} disabled={running}
-          options={WINDOW_TYPES.map(w => ({ value: w, label: w }))} />
-        <ConfigSelect label="Avg" value={numAverages} onChange={onNumAveragesChange} disabled={running}
-          options={AVERAGING_OPTIONS.map(n => ({ value: n, label: n === 1 ? "Off" : `${n}×` }))} />
-        <ConfigSelect label="Rate" value={sampleRate} onChange={onSampleRateChange} disabled={running}
-          options={SAMPLE_RATES.map(r => ({ value: r, label: `${r / 1000}k` }))} />
-      </div>
-2 px-5 py-1
-      <div className="flex items-center gap-2 px-5 py-1 border-r border-border-default">
-        <button
-          onClick={running ? onStop : onStart}
-          disabled={simulating}
-          className={`w-8 h-8 rounded btn-hardware font-bold text-[14px] transition-colors
-            ${running
-              ? "border-danger/50 text-danger hover:bg-danger/15"
-              : "border-primary/50 text-primary hover:bg-primary/15"
-            } disabled:opacity-30 disabled:cursor-not-allowed`}
-          title={running ? "Parar motor" : "Iniciar motor"}
-        >
-          {running ? "■" : "▶"}
-        </button>
-        <button className="w-8 h-8 rounded btn-hardware" title="Resetar médias">
-          <span className="material-symbols-outlined text-[16px]">restart_alt</span>
-        </button>
-      </div>
-
-      {/* ── Simulation ── */}3 px-5 py-1
-      <div className="flex items-center gap-3 px-5 py-1 border-r border-border-default">
-        <div className="flex flex-col items-center gap-0.5">
-          <DeskLabel>Sinal</DeskLabel>
-          <select
-            value={simSignal}
-            onChange={(e) => onSimSignalChange(e.target.value as SimSignalType)}
-            disabled={simulating || running}
-            className="bg-black text-text-primary border border-border-default rounded
-                       px-1 py-0.5 text-[9px] font-mono outline-none min-w-[72px] text-center
-                       disabled:opacity-40 disabled:cursor-not-allowed"
+      {/* ── Transport Controls ── */}
+      <div className="flex items-center gap-4">
+        <div className="flex gap-1">
+          <button
+            onClick={onStop}
+            disabled={!running && !simulating}
+            className="btn-hardware w-8 h-8 rounded-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            title="Parar"
           >
-            {SIM_SIGNAL_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
+            <span className="material-symbols-outlined text-[16px]">stop</span>
+          </button>
+          <button
+            onClick={running ? undefined : onStart}
+            disabled={simulating}
+            className={`btn-hardware w-10 h-8 rounded-sm relative transition-colors
+              ${running ? "bg-zinc-800 text-primary border-primary/30" : ""}
+              disabled:opacity-30 disabled:cursor-not-allowed`}
+            title={running ? "Motor ativo" : "Iniciar motor"}
+          >
+            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+            {running && <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[3px] h-[3px] rounded-full bg-primary" />}
+          </button>
+          <button className="btn-hardware w-8 h-8 rounded-sm" title="Pausar">
+            <span className="material-symbols-outlined text-[16px]">pause</span>
+          </button>
         </div>
-        <button
-          onClick={simulating ? onStopSim : onStartSim}
-          disabled={running}
-          className={`w-8 h-8 rounded btn-hardware font-bold text-[10px] tracking-tight transition-colors
-            ${simulating
-              ? "border-warning/60 text-warning bg-warning/10 hover:bg-warning/20"
-              : "border-secondary/50 text-secondary hover:bg-secondary/15"
-            } disabled:opacity-30 disabled:cursor-not-allowed`}
-          title={simulating ? "Parar simulação" : "Iniciar simulação"}
-        >
-          SIM
-        </button>
-        {simulating && (
-          <span className="w-2 h-2 rounded-full bg-warning animate-pulse" title="Simulação ativa" />
-        )}
-      </div>
-
-      {/* ── System Telemetry ── */}5 py-1
-      <div className="flex flex-col justify-center gap-1 px-5 py-1 border-r border-border-default min-w-[120px]">
-        <DeskLabel>Sistema</DeskLabel>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] font-mono text-text-dim">
-          <span>Buffer</span>
-          <span className="text-text-secondary">{fftSize}</span>
-          <span>Rate</span>
-          <span className="text-text-secondary">{sampleRate / 1000}kHz</span>
-          <span>Window</span>
-          <span className="text-text-secondary">{windowType}</span>
-        </div>
-      </div>
-
-      {/* ── Delay Engine ── */}5 py-1
-      <div className="flex flex-col justify-center gap-1 px-5 py-1 ml-auto">
-        <DeskLabel>Motor de Delay</DeskLabel>
+        <div className="h-6 w-px bg-zinc-800 mx-1" />
         <div className="flex items-center gap-2">
-          <div className="digital-readout px-2 py-1 rounded text-xs font-mono text-primary min-w-[72px] text-center">
-            0.000 ms
+          <span className="text-[8px] font-mono text-zinc-600 uppercase">SIGNAL</span>
+          <div className="flex items-center gap-2 px-2 py-1 bg-black border border-zinc-800 rounded-sm">
+            {simulating && <div className="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_4px_#94de2d]" />}
+            <select
+              value={simSignal}
+              onChange={(e) => onSimSignalChange(e.target.value as SimSignalType)}
+              disabled={simulating || running}
+              className="bg-transparent text-[9px] font-mono text-secondary outline-none
+                         disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {SIM_SIGNAL_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
           </div>
-          <div className="digital-readout px-2 py-1 rounded text-xs font-mono text-secondary min-w-[72px] text-center">
-            0.000 m
+          <button
+            onClick={simulating ? onStopSim : onStartSim}
+            disabled={running}
+            className={`btn-hardware w-8 h-8 rounded-sm text-[9px] font-bold font-mono transition-colors
+              ${simulating ? "border-warning/60 text-warning bg-warning/10" : "border-secondary/50 text-secondary hover:bg-secondary/15"}
+              disabled:opacity-30 disabled:cursor-not-allowed`}
+            title={simulating ? "Parar simulação" : "Iniciar simulação"}
+          >
+            SIM
+          </button>
+        </div>
+      </div>
+
+      {/* ── System Telemetry & Delay ── */}
+      <div className="flex items-center gap-4 w-[35%] justify-end">
+        {/* Telemetry */}
+        <div className="flex items-center gap-3 px-3 py-1 bg-black border border-zinc-800 rounded-sm">
+          <TelemetryItem label="DSP" value="—" color="text-primary" />
+          <div className="w-px h-6 bg-zinc-800" />
+          <TelemetryItem label="Latency" value={`${(fftSize / sampleRate * 1000).toFixed(1)}ms`} color="text-secondary" />
+          <div className="w-px h-6 bg-zinc-800" />
+          <TelemetryItem label="Buffer" value={String(fftSize)} color="text-primary" />
+        </div>
+
+        {/* Delay Engine */}
+        <div className="flex flex-col items-end">
+          <DeskLabel>Delay Engine</DeskLabel>
+          <div className="bg-black border border-zinc-800 px-3 h-8 flex items-center justify-end rounded-sm min-w-[120px]">
+            <span className="text-xl font-mono text-secondary leading-none tracking-tighter">0.00</span>
+            <span className="text-[9px] font-mono text-secondary/60 ml-1.5 mt-1">ms</span>
           </div>
         </div>
+        <button className="h-8 px-4 btn-hardware hover:text-primary hover:border-primary/40 gap-2 rounded-sm">
+          <span className="material-symbols-outlined text-[16px]">straighten</span>
+          <span className="text-[10px] font-bold font-mono uppercase">Find</span>
+        </button>
       </div>
     </footer>
   );
@@ -188,60 +166,31 @@ export default function ControlDesk({
 
 // ─── Sub-components ─────────────────────────────────────────────────
 
-function VuMeter({ label, level }: { label: string; level: number }) {
+function VuMeter({ level }: { level: number }) {
   const pct = Math.min(100, Math.max(0, level * 100));
   return (
-    <div className="flex flex-col items-center gap-0.5">
-      <div className="w-3 h-12 rounded-sm bg-black border border-border-default overflow-hidden relative">
-        <div
-          className="absolute bottom-0 left-0 right-0 vu-meter-bar transition-all duration-75"
-          style={{ height: `${pct}%` }}
-        />
-      </div>
-      <span className="text-[7px] font-mono text-text-dim">{label}</span>
+    <div className="w-2 h-full bg-zinc-900 relative rounded-sm overflow-hidden">
+      <div
+        className="absolute bottom-0 left-0 right-0 vu-meter-bar transition-all duration-75"
+        style={{ height: `${pct}%` }}
+      />
     </div>
   );
 }
 
 function DeskLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[7px] uppercase tracking-widest text-text-muted font-semibold">
+    <span className="text-[8px] font-bold text-zinc-600 uppercase mb-0.5">
       {children}
     </span>
   );
 }
 
-function ConfigSelect<T extends string | number>({
-  label,
-  value,
-  onChange,
-  disabled,
-  options,
-}: {
-  label: string;
-  value: T;
-  onChange: (v: T) => void;
-  disabled: boolean;
-  options: { value: T; label: string }[];
-}) {
+function TelemetryItem({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5">
-      <span className="text-[7px] uppercase tracking-widest text-text-muted font-semibold">{label}</span>
-      <select
-        value={String(value)}
-        onChange={(e) => {
-          const raw = e.target.value;
-          onChange((typeof value === "number" ? Number(raw) : raw) as T);
-        }}
-        disabled={disabled}
-        className="bg-black text-text-primary border border-border-default rounded
-                   px-1 py-0.5 text-[9px] font-mono outline-none min-w-[52px] text-center
-                   disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        {options.map((o) => (
-          <option key={String(o.value)} value={String(o.value)}>{o.label}</option>
-        ))}
-      </select>
+    <div className="flex flex-col">
+      <span className="text-[7px] text-zinc-600 font-bold uppercase tracking-widest">{label}</span>
+      <span className={`text-[10px] font-mono ${color}`}>{value}</span>
     </div>
   );
 }

@@ -40,17 +40,22 @@ export default function Header({
 
       {/* View mode tabs */}
       <div className="flex items-center gap-0.5 ml-2">
-        {(["spectrum", "transfer", "phase"] as ViewMode[]).map((m) => (
+        {([
+          { mode: "spectrum" as ViewMode, label: "MAGNITUDE" },
+          { mode: "phase" as ViewMode, label: "PHASE" },
+          { mode: "impulse" as ViewMode, label: "IMPULSE" },
+          { mode: "coherence" as ViewMode, label: "COHERENCE" },
+        ]).map(({ mode, label }) => (
           <button
-            key={m}
-            onClick={() => onViewModeChange(m)}
-            className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide transition-colors
-              ${viewMode === m
+            key={mode}
+            onClick={() => onViewModeChange(mode)}
+            className={`px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wide transition-colors
+              ${viewMode === mode
                 ? "bg-primary/15 text-primary border border-primary/30"
                 : "text-text-dim border border-transparent hover:text-text-secondary hover:bg-bg-elevated"
               }`}
           >
-            {m === "spectrum" ? "Magnitude" : m === "transfer" ? "Transferência" : "Fase"}
+            {label}
           </button>
         ))}
       </div>

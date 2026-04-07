@@ -106,6 +106,7 @@ export default function App() {
           showMeas={showMeas}
           showCoherence={showCoherence}
           onFpsUpdate={handleFpsUpdate}
+          running={running}
         />
       }
       controls={
@@ -148,14 +149,14 @@ function buildTraces(
   const list: { id: string; label: string; color: string; visible: boolean; onToggle: () => void }[] = [];
 
   if (mode === "spectrum") {
-    list.push({ id: "ref", label: "Reference (CH1)", color: "#00e5ff", visible: showRef, onToggle: handlers.onToggleRef });
-    list.push({ id: "meas", label: "Measurement (CH2)", color: "#eeff41", visible: showMeas, onToggle: handlers.onToggleMeas });
+    list.push({ id: "ref", label: "Referência (CH1)", color: "#00e5ff", visible: showRef, onToggle: handlers.onToggleRef });
+    list.push({ id: "meas", label: "Medição (CH2)", color: "#eeff41", visible: showMeas, onToggle: handlers.onToggleMeas });
   } else if (mode === "transfer") {
-    list.push({ id: "tf", label: "Transfer H1", color: "#00e5ff", visible: true, onToggle: () => {} });
-    list.push({ id: "coh", label: "Coherence γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
+    list.push({ id: "tf", label: "Transferência H1", color: "#00e5ff", visible: true, onToggle: () => {} });
+    list.push({ id: "coh", label: "Coerência γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
   } else {
-    list.push({ id: "phase", label: "Phase (deg)", color: "#ff4081", visible: true, onToggle: () => {} });
-    list.push({ id: "coh", label: "Coherence γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
+    list.push({ id: "phase", label: "Fase (graus)", color: "#ff4081", visible: true, onToggle: () => {} });
+    list.push({ id: "coh", label: "Coerência γ²", color: "rgba(139,92,246,0.75)", visible: showCoh, onToggle: handlers.onToggleCoh });
   }
 
   return list;

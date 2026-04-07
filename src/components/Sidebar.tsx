@@ -26,13 +26,14 @@ interface MemorySlot {
   label: string;
   stored: boolean;
   color: string;
+  visible: boolean;
 }
 
 const INITIAL_SLOTS: MemorySlot[] = [
-  { id: 1, label: "Slot A", stored: false, color: "#4cd7f6" },
-  { id: 2, label: "Slot B", stored: false, color: "#94de2d" },
-  { id: 3, label: "Slot C", stored: false, color: "#fbabff" },
-  { id: 4, label: "Slot D", stored: false, color: "#dc2626" },
+  { id: 1, label: "L MAIN FIR", stored: true, color: "#4cd7f6", visible: true },
+  { id: 2, label: "R PA SYSTEM", stored: true, color: "#fbabff", visible: true },
+  { id: 3, label: "SUB_ARRAY_REF", stored: true, color: "#94de2d", visible: false },
+  { id: 4, label: "Slot D", stored: false, color: "#dc2626", visible: false },
 ];
 
 export default function Sidebar({
@@ -45,45 +46,91 @@ export default function Sidebar({
   fftSize,
 }: SidebarProps) {
   const [activeNav, setActiveNav] = useState<NavSection>("measurements");
-  const [slots] = useState<MemorySlot[]>(INITIAL_SLOTS);
+  const [slots, setSlots] = useState<MemorySlot[]>(INITIAL_SLOTS);
+  const [ctxMenuSlot, setCtxMenuSlot] = useState<number | null>(null);
 
   if (!open) return null;
 
   const hzPerBin = (sampleRate / fftSize).toFixed(1);
 
+  const toggleSlotVisibility = (id: number) => {
+    setSlots((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, visible: !s.visible } : s))
+    );
+  };
+
   return (
     <aside className="flex flex-col w-52 shrink-0 bg-bg-panel border-r border-border-default select-none">
       {/* ── App title ── */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-border-default">
-        <span className="text-primary font-bold text-xs tracking-tight">AUDIOTEC</span>
+        <span className="text-primary font-bold text-xs tracking-tight">SONIC LAB</span>
         <span className="text-[9px] font-mono text-text-dim">v0.1.0</span>
       </div>
 
-      {/* ── Capture button ── */}
+      {/* ── Capture button (filled cyan — matches design) ── */}
       <div className="px-2 py-2 border-b border-border-default">
-        <button className="w-full py-1.5 rounded text-[10px] font-bold tracking-wider bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition-colors">
+        <button className="w-full py-1.5 rounded text-[10px] font-bold tracking-wider bg-primary text-black hover:bg-primary/90 transition-colors">
           <span className="material-symbols-outlined text-[14px] align-middle mr-1">fiber_manual_record</span>
-          CAPTURAR
+          CAPTURE
+          <span className="text-[8px] font-mono ml-1 opacity-60">[SPACE]</span>
         </button>
       </div>
 
-      {/* ── Memory Slots ── */}
+      {/* ── Memory Slots (list-style with vis/delete — matches design) ── */}
       <div className="px-2 py-2 border-b border-border-default">
         <div className="text-[8px] font-semibold uppercase tracking-widest text-text-muted px-1 mb-1.5">
           Slots de Memória
         </div>
-        <div className="grid grid-cols-2 gap-1">
+        <div className="flex flex-col gap-0.5">
           {slots.map((slot) => (
-            <button
+            <div
               key={slot.id}
-              className="flex items-center gap-1.5 px-1.5 py-1 rounded text-[9px] font-mono btn-hardware"
+              className="flex items-center gap-1.5 px-1.5 py-1 rounded hover:bg-bg-elevated transition-colors group relative"
+              onContextMenu={(e) => { e.preventDefault(); setCtxMenuSlot(slot.id === ctxMenuSlot ? null : slot.id); }}
             >
               <div
                 className="w-2 h-2 rounded-sm shrink-0"
-                style={{ backgroundColor: slot.stored ? slot.color : "transparent", border: `1px solid ${slot.color}` }}
+                style={{
+                  backgroundColor: slot.stored ? slot.color : "transparent",
+                  border: `1.5px solid ${slot.color}`,
+                  opacity: slot.visible ? 1 : 0.3,
+                }}
               />
-              <span className="truncate">{slot.label}</span>
-            </button>
+              <span className={`text-[9px] font-mono flex-1 truncate ${slot.visible ? "text-text-primary" : "text-text-dim"}`}>
+                {slot.label}
+              </span>
+              <button
+                onClick={() => toggleSlotVisibility(slot.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                title={slot.visible ? "Hide" : "Show"}
+              >
+                <span className="material-symbols-outlined text-[12px] text-text-dim hover:text-text-secondary">
+                  {slot.visible ? "visibility" : "visibility_off"}
+                </span>
+              </button>
+              <button
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                title="Remove"
+              >
+                <span className="material-symbols-outlined text-[12px] text-text-dim hover:text-danger">
+                  close
+                </span>
+              </button>
+              {/* Context menu */}
+              {ctxMenuSlot === slot.id && (
+                <div className="absolute left-full top-0 ml-1 z-50 bg-zinc-900 border border-zinc-700 rounded shadow-xl py-1 min-w-[140px]">
+                  {["Informações / Notas", "Inverter Polaridade", "Calcular Média com...", "Exportar CSV", "Exportar FRD"].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => setCtxMenuSlot(null)}
+                      className="w-full text-left px-3 py-1 text-[10px] text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>
