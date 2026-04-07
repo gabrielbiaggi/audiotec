@@ -1,0 +1,52 @@
+[package]
+name = "audiotec"
+version = "0.1.0"
+description = "Professional acoustic measurement and alignment software"
+authors = ["AudioTec Team"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.77"
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+# --- Tauri core ---
+tauri = { version = "2.0", features = [] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# --- Async runtime ---
+tokio = { version = "1", features = ["full"] }
+
+# --- Audio I/O (ASIO on Windows, CoreAudio on macOS, ALSA on Linux) ---
+cpal = "0.15"
+
+# --- DSP / Math ---
+rustfft = "6.2"
+
+# --- Lock-free ring buffer for real-time audio pipeline ---
+ringbuf = "0.4"
+
+# --- Database ---
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# --- Logging ---
+log = "0.4"
+env_logger = "0.11"
+
+# --- Utilities ---
+num-complex = "0.4"
+crossbeam-channel = "0.5"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+strip = true
+panic = "abort"
