@@ -1,4 +1,10 @@
+pub mod delay_finder;
 pub mod fft;
+pub mod impulse_response;
+pub mod rta;
+pub mod signal_generator;
+pub mod spectrogram;
+pub mod spl_meter;
 pub mod windowing;
 
 /// Standard FFT block size for real-time analysis.
