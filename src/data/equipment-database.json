@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-08",
+  "equipment": [
+    { "id": "beh-x32", "brand": "Behringer", "model": "X32", "type": "console", "year_released": 2012, "dsp_capabilities": ["40ch-mixing", "25-bus", "8-fx-slots", "32x32-usb", "aes50"], "frequency_response_notes": "20Hz-20kHz ±0.5dB, dynamic range 110dB", "manual_link": "https://www.behringer.com/product.html?modelCode=0805-AAJ" },
+    { "id": "beh-xr18", "brand": "Behringer", "model": "XR18", "type": "console", "year_released": 2015, "dsp_capabilities": ["18ch-mixing", "12-bus", "4-fx-slots", "18x18-usb", "wifi-control"], "frequency_response_notes": "20Hz-20kHz ±0.5dB, compact rack format", "manual_link": "https://www.behringer.com/product.html?modelCode=0808-AAD" },
+    { "id": "yam-01v96", "brand": "Yamaha", "model": "01V96i", "type": "console", "year_released": 2010, "dsp_capabilities": ["40ch-mixing", "16-bus", "4-fx-slots", "16x16-usb", "adat"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.0dB, 24-bit/96kHz", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/01v96i/" },
+    { "id": "yam-cl5", "brand": "Yamaha", "model": "CL5", "type": "console", "year_released": 2012, "dsp_capabilities": ["72ch-mixing", "24-mix-bus", "8-matrix", "dante-64x64", "premium-rack"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.5dB, 96kHz ready", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/cl_series/" },
+    { "id": "yam-cl3", "brand": "Yamaha", "model": "CL3", "type": "console", "year_released": 2012, "dsp_capabilities": ["64ch-mixing", "24-mix-bus", "8-matrix", "dante-64x64", "premium-rack"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.5dB, 96kHz ready", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/cl_series/" },
+    { "id": "yam-cl1", "brand": "Yamaha", "model": "CL1", "type": "console", "year_released": 2012, "dsp_capabilities": ["48ch-mixing", "24-mix-bus", "8-matrix", "dante-64x64", "premium-rack"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.5dB, 96kHz ready", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/cl_series/" },
+    { "id": "yam-ql5", "brand": "Yamaha", "model": "QL5", "type": "console", "year_released": 2014, "dsp_capabilities": ["64ch-mixing", "16-mix-bus", "8-matrix", "dante-16x16", "premium-rack"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.5dB", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/ql_series/" },
+    { "id": "yam-ql1", "brand": "Yamaha", "model": "QL1", "type": "console", "year_released": 2014, "dsp_capabilities": ["32ch-mixing", "16-mix-bus", "8-matrix", "dante-16x16", "premium-rack"], "frequency_response_notes": "20Hz-20kHz +0.5/-1.5dB", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/ql_series/" },
+    { "id": "yam-tf5", "brand": "Yamaha", "model": "TF5", "type": "console", "year_released": 2015, "dsp_capabilities": ["48ch-mixing", "20-aux", "8-fx-slots", "34x34-usb", "dante-option", "touchscreen"], "frequency_response_notes": "20Hz-20kHz ±0.5dB, Dan Dugan automixer", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/tf/" },
+    { "id": "yam-tf3", "brand": "Yamaha", "model": "TF3", "type": "console", "year_released": 2015, "dsp_capabilities": ["40ch-mixing", "20-aux", "8-fx-slots", "34x34-usb", "touchscreen"], "frequency_response_notes": "20Hz-20kHz ±0.5dB", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/tf/" },
+    { "id": "yam-tf1", "brand": "Yamaha", "model": "TF1", "type": "console", "year_released": 2015, "dsp_capabilities": ["32ch-mixing", "20-aux", "8-fx-slots", "34x34-usb", "touchscreen"], "frequency_response_notes": "20Hz-20kHz ±0.5dB", "manual_link": "https://usa.yamaha.com/products/proaudio/mixers/tf/" },
+    { "id": "sc-ui24r", "brand": "Soundcraft", "model": "Ui24R", "type": "console", "year_released": 2017, "dsp_capabilities": ["24ch-mixing", "10-aux", "4-fx", "wifi-control", "usb-recording"], "frequency_response_notes": "20Hz-20kHz ±1dB, dbx/Lexicon DSP", "manual_link": "https://www.soundcraft.com/en/products/ui24r" },
+    { "id": "sc-sie3", "brand": "Soundcraft", "model": "Si Expression 3", "type": "console", "year_released": 2013, "dsp_capabilities": ["64ch-mixing", "14-aux", "4-fx", "soundcraft-stagebox", "dante-option"], "frequency_response_notes": "20Hz-20kHz ±0.5dB", "manual_link": "https://www.soundcraft.com/en/products/si-expression-3" },
+    { "id": "mid-m32", "brand": "Midas", "model": "M32", "type": "console", "year_released": 2014, "dsp_capabilities": ["40ch-mixing", "25-bus", "8-fx-slots", "32x32-usb", "aes50", "midas-preamps"], "frequency_response_notes": "20Hz-20kHz ±0.5dB, Midas PRO preamps", "manual_link": "https://www.midasconsoles.com/product.html?modelCode=0812-AAA" },
+
+    { "id": "dbx-pa2", "brand": "DBX", "model": "DriveRack PA2", "type": "dsp", "year_released": 2014, "dsp_capabilities": ["3-way-crossover", "auto-eq", "feedback-suppression", "delay", "compressor-limiter", "wizard-setup"], "frequency_response_notes": "20Hz-20kHz ±0.25dB, 24-bit/48kHz", "manual_link": "https://dbxpro.com/en/products/driverack-pa2" },
+    { "id": "dbx-260", "brand": "DBX", "model": "DriveRack 260", "type": "dsp", "year_released": 2010, "dsp_capabilities": ["2in-6out", "crossover", "eq", "delay", "compressor", "limiter", "afe"], "frequency_response_notes": "20Hz-20kHz ±0.25dB, Type IV conversion", "manual_link": "https://dbxpro.com/en/products/driverack-260" },
+    { "id": "beh-dcx2496", "brand": "Behringer", "model": "DCX2496", "type": "dsp", "year_released": 2011, "dsp_capabilities": ["3-way-stereo", "6-way-mono", "crossover", "eq", "delay", "limiter", "rta"], "frequency_response_notes": "20Hz-20kHz ±0.5dB, 24-bit AKM converters", "manual_link": "https://www.behringer.com/product.html?modelCode=0504-AAF" },
+    { "id": "xil-xp4080", "brand": "Xilica", "model": "XP-4080", "type": "dsp", "year_released": 2016, "dsp_capabilities": ["4in-8out", "fir-filters", "iir-filters", "matrix-mixer", "delay", "dante-option"], "frequency_response_notes": "20Hz-20kHz ±0.1dB, 96kHz", "manual_link": "https://xilica.com/products/xp-series/" },
+    { "id": "mar-dpa880t", "brand": "Marani", "model": "DPA880T", "type": "dsp", "year_released": 2018, "dsp_capabilities": ["8in-8out", "crossover", "eq", "delay", "limiter", "dante", "touchscreen"], "frequency_response_notes": "20Hz-20kHz ±0.1dB, 96kHz", "manual_link": "https://www.marani.com/" },
+
+    { "id": "ma-mka1585h", "brand": "Mark Áudio", "model": "MKA 1585H PRO", "type": "top", "year_released": 2018, "dsp_capabilities": [], "frequency_response_notes": "65Hz-18kHz ±3dB, 2-way horn loaded, SPL 131dB", "manual_link": "https://www.markaudio.com.br/" },
+    { "id": "ma-mka12100", "brand": "Mark Áudio", "model": "MKA 12100", "type": "top", "year_released": 2020, "dsp_capabilities": [], "frequency_response_notes": "60Hz-18kHz, 2-way, SPL 127dB, coaxial horn", "manual_link": "https://www.markaudio.com.br/" },
+    { "id": "ma-sp1200", "brand": "Mark Áudio", "model": "SP 1200", "type": "sub", "year_released": 2019, "dsp_capabilities": [], "frequency_response_notes": "35Hz-250Hz, 1x18\" driver, SPL 133dB", "manual_link": "https://www.markaudio.com.br/" },
+
+    { "id": "tf-tf15a", "brand": "Techforce", "model": "TF-15A", "type": "top", "year_released": 2020, "dsp_capabilities": ["bi-amplified", "dsp-onboard", "bluetooth"], "frequency_response_notes": "45Hz-20kHz, 15\"/1.4\" driver, 1000W, SPL 130dB", "manual_link": "https://www.techforce.com.br/" },
+    { "id": "tf-sub18a", "brand": "Techforce", "model": "TF-SUB18A", "type": "sub", "year_released": 2021, "dsp_capabilities": ["dsp-onboard", "cardioid-mode"], "frequency_response_notes": "32Hz-150Hz, 1x18\" driver, 2000W, SPL 136dB", "manual_link": "https://www.techforce.com.br/" },
+    { "id": "tf-la206", "brand": "Techforce", "model": "TF-LA206", "type": "line", "year_released": 2022, "dsp_capabilities": [], "frequency_response_notes": "65Hz-20kHz, 2x6\"/1x1\" driver, passive line array element", "manual_link": "https://www.techforce.com.br/" },
+
+    { "id": "att-vrps15", "brand": "Attack", "model": "VRPS 15", "type": "top", "year_released": 2019, "dsp_capabilities": [], "frequency_response_notes": "50Hz-20kHz, 15\"/driver titanium, 500W RMS", "manual_link": "https://www.attacksound.com.br/" },
+    { "id": "att-vrs1800", "brand": "Attack", "model": "VRS 1800", "type": "sub", "year_released": 2020, "dsp_capabilities": [], "frequency_response_notes": "30Hz-200Hz, 1x18\" driver, 1000W RMS", "manual_link": "https://www.attacksound.com.br/" },
+
+    { "id": "sta-a600", "brand": "Staner", "model": "Alive 600A", "type": "top", "year_released": 2021, "dsp_capabilities": ["bi-amplified", "bluetooth", "usb-playback"], "frequency_response_notes": "50Hz-18kHz, 15\"/driver, 600W, ativa", "manual_link": "https://www.staner.com.br/" },
+    { "id": "sta-sub15a", "brand": "Staner", "model": "SUB1500A", "type": "sub", "year_released": 2022, "dsp_capabilities": ["active", "crossover-builtin"], "frequency_response_notes": "35Hz-180Hz, 1x15\" driver, 600W, ativa", "manual_link": "https://www.staner.com.br/" },
+
+    { "id": "ant-ts700ax", "brand": "Antera", "model": "TS 700 AX", "type": "top", "year_released": 2022, "dsp_capabilities": ["bi-amplified", "dsp-onboard"], "frequency_response_notes": "50Hz-20kHz, 15\"/1\" titanium, 700W, SPL 128dB", "manual_link": "https://www.antera.com.br/" },
+    { "id": "ant-sw600", "brand": "Antera", "model": "SW 600", "type": "sub", "year_released": 2023, "dsp_capabilities": ["active"], "frequency_response_notes": "35Hz-200Hz, 1x18\", 600W RMS", "manual_link": "https://www.antera.com.br/" },
+
+    { "id": "jbl-prx815", "brand": "JBL", "model": "PRX815", "type": "top", "year_released": 2016, "dsp_capabilities": ["bi-amplified", "wifi-control", "dbx-dsp"], "frequency_response_notes": "42Hz-20kHz ±3dB, 15\"/1.5\" driver, 1500W, SPL 137dB", "manual_link": "https://jblpro.com/products/prx815" },
+    { "id": "jbl-prx818s", "brand": "JBL", "model": "PRX818XLFW", "type": "sub", "year_released": 2016, "dsp_capabilities": ["bi-amplified", "wifi-control", "cardioid-mode"], "frequency_response_notes": "30Hz-105Hz ±3dB, 1x18\" driver, 1500W, SPL 136dB", "manual_link": "https://jblpro.com/products/prx818xlfw" },
+    { "id": "jbl-srx815p", "brand": "JBL", "model": "SRX815P", "type": "top", "year_released": 2015, "dsp_capabilities": ["bi-amplified", "network-control", "dbx-dsp", "dante-option"], "frequency_response_notes": "38Hz-20kHz ±3dB, 15\"/1.5\" driver, 2000W, SPL 139dB", "manual_link": "https://jblpro.com/products/srx815p" },
+    { "id": "jbl-vrx932lap", "brand": "JBL", "model": "VRX932LAP", "type": "line", "year_released": 2010, "dsp_capabilities": ["bi-amplified", "dbx-dsp"], "frequency_response_notes": "57Hz-20kHz ±3dB, 2x12\"/3x1\" driver, 1750W, line array", "manual_link": "https://jblpro.com/products/vrx932lap" },
+    { "id": "jbl-vrx918sp", "brand": "JBL", "model": "VRX918SP", "type": "sub", "year_released": 2010, "dsp_capabilities": ["bi-amplified", "dbx-dsp"], "frequency_response_notes": "31Hz-180Hz ±3dB, 1x18\" driver, 1500W, SPL 134dB", "manual_link": "https://jblpro.com/products/vrx918sp" },
+
+    { "id": "qsc-k12.2", "brand": "QSC", "model": "K12.2", "type": "top", "year_released": 2017, "dsp_capabilities": ["bi-amplified", "dsp-onboard", "intrinsic-correction"], "frequency_response_notes": "45Hz-20kHz ±3dB, 12\"/1.4\" driver, 2000W, SPL 132dB", "manual_link": "https://www.qsc.com/systems/products/loudspeakers/powered-loudspeakers/k2-series/" },
+    { "id": "qsc-ks118", "brand": "QSC", "model": "KS118", "type": "sub", "year_released": 2018, "dsp_capabilities": ["bi-amplified", "dsp-onboard", "cardioid-mode", "intrinsic-correction"], "frequency_response_notes": "30Hz-138Hz ±3dB, 1x18\" driver, 3600W, SPL 134dB", "manual_link": "https://www.qsc.com/systems/products/loudspeakers/powered-subwoofers/ks118/" },
+
+    { "id": "ev-elx200-15p", "brand": "Electro-Voice", "model": "ELX200-15P", "type": "top", "year_released": 2018, "dsp_capabilities": ["bi-amplified", "quicksmartdsp", "bluetooth-control"], "frequency_response_notes": "48Hz-20kHz ±3dB, 15\"/1.5\" driver, 1200W, SPL 132dB", "manual_link": "https://products.electrovoice.com/na/en/elx200-15p" },
+    { "id": "ev-elx200-18sp", "brand": "Electro-Voice", "model": "ELX200-18SP", "type": "sub", "year_released": 2018, "dsp_capabilities": ["bi-amplified", "quicksmartdsp", "cardioid-mode"], "frequency_response_notes": "33Hz-160Hz ±3dB, 1x18\" driver, 1200W, SPL 132dB", "manual_link": "https://products.electrovoice.com/na/en/elx200-18sp" },
+
+    { "id": "rcf-art745a", "brand": "RCF", "model": "ART 745-A MK5", "type": "top", "year_released": 2023, "dsp_capabilities": ["bi-amplified", "firphase-dsp", "bluetooth-control"], "frequency_response_notes": "45Hz-20kHz ±3dB, 15\"/3\" driver, 1400W, SPL 132dB", "manual_link": "https://www.rcf.it/en/products/product-detail/art-745-a-mk5" },
+    { "id": "rcf-sub8004as", "brand": "RCF", "model": "SUB 8004-AS", "type": "sub", "year_released": 2019, "dsp_capabilities": ["bi-amplified", "cardioid-mode", "dsp-onboard"], "frequency_response_notes": "27Hz-120Hz ±3dB, 1x18\" driver, 2500W, SPL 139dB", "manual_link": "https://www.rcf.it/en/products/product-detail/sub-8004-as" },
+    { "id": "rcf-hdl6a", "brand": "RCF", "model": "HDL 6-A", "type": "line", "year_released": 2020, "dsp_capabilities": ["bi-amplified", "firphase-dsp", "rdnet-control"], "frequency_response_notes": "60Hz-20kHz ±3dB, 2x6\"/1x1\" driver, 700W, compact line array", "manual_link": "https://www.rcf.it/en/products/product-detail/hdl-6-a" },
+
+    { "id": "dbt-vio-x10", "brand": "dBTechnologies", "model": "VIO X10", "type": "top", "year_released": 2021, "dsp_capabilities": ["bi-amplified", "dsp-onboard", "aurora-net", "rj45-control"], "frequency_response_notes": "55Hz-20kHz ±3dB, 10\"/1\" driver, 1200W, SPL 131dB", "manual_link": "https://www.dbtechnologies.com/en/products/vio/vio-x10/" },
+    { "id": "dbt-sub918", "brand": "dBTechnologies", "model": "SUB 918", "type": "sub", "year_released": 2019, "dsp_capabilities": ["bi-amplified", "dsp-onboard"], "frequency_response_notes": "35Hz-130Hz ±3dB, 1x18\" driver, 1800W, SPL 137dB", "manual_link": "https://www.dbtechnologies.com/en/products/sub/sub-918/" }
+  ],
+  "types": {
+    "console": "Mesa de som / mixer digital",
+    "dsp": "Processador de sinal / DriveRack / Crossover digital",
+    "top": "Caixa acústica principal (full-range / mid-high)",
+    "sub": "Subwoofer",
+    "line": "Elemento de line array",
+    "monitor": "Monitor de palco / wedge"
+  },
+  "schema": {
+    "id": "string — identificador único (brand-model slug)",
+    "brand": "string — fabricante",
+    "model": "string — modelo completo",
+    "type": "enum — console | dsp | top | sub | line | monitor",
+    "year_released": "number — ano de lançamento",
+    "dsp_capabilities": "string[] — recursos DSP embutidos",
+    "frequency_response_notes": "string — notas de resposta em frequência e specs",
+    "manual_link": "string — URL do manual ou página do produto"
+  }
+}

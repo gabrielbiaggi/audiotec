@@ -1,17 +1,18 @@
 /**
- * GraphArea -- Sonic Lab Pro: viewport com suporte a split.
+ * GraphArea -- Sonic Lab Pro: viewport with resizable split.
  *
  * Layout:
- * - Espectro / Impulso / Coerencia: AnalyzerCanvas ocupa 100%
- * - Transferencia: Magnitude (65%) + Fase (35%) em split
- * - Fase: canvas de fase ocupa 100%
+ * - Spectrum / Impulse / Coherence: AnalyzerCanvas fills 100%
+ * - Transfer: Magnitude + Phase with draggable splitter
+ * - Phase: phase canvas fills 100%
  *
- * Overlays: HUD de informacoes (topo-esquerda), badge RTA AO VIVO (topo-direita).
+ * Overlays: HUD info (top-left), RTA LIVE badge (top-right).
  */
 
 import { useState } from "react";
 import type { SpectrumData, ViewMode } from "../types";
 import AnalyzerCanvas from "./AnalyzerCanvas";
+import { useResizableSplitter } from "../hooks/useResizableSplitter";
 
 interface GraphAreaProps {
   spectrumRef: React.RefObject<SpectrumData | null>;
@@ -52,9 +53,10 @@ export default function GraphArea({
 }: GraphAreaProps) {
   const [cursorInfo] = useState({ freq: "--", mag: "--", phase: "--", coh: "--" });
   const isTransfer = viewMode === "transfer";
+  const { ratio, containerRef, onMouseDown } = useResizableSplitter(0.65, 0.25, 0.85);
 
   return (
-    <div className="flex flex-col flex-1 min-w-0 min-h-0 relative">
+    <div ref={containerRef} className="flex flex-col flex-1 min-w-0 min-h-0 relative">
 
       {/* HUD: caixa de informacoes (topo-esquerda) */}
       <div className="absolute top-2 left-14 z-20 pointer-events-none">
@@ -85,8 +87,8 @@ export default function GraphArea({
         {viewLabel(viewMode)}
       </div>
 
-      {/* Painel principal (Magnitude) */}
-      <div className="relative min-h-0 bg-bg-canvas" style={{ flex: isTransfer ? "0 0 65%" : "1 1 100%" }}>
+      {/* Main panel (Magnitude) */}
+      <div className="relative min-h-0 bg-bg-canvas" style={{ flex: isTransfer ? `0 0 ${ratio * 100}%` : "1 1 100%" }}>
         <AnalyzerCanvas
           spectrumRef={spectrumRef}
           viewMode={isTransfer ? "transfer" : resolveCanvasMode(viewMode)}
@@ -97,11 +99,11 @@ export default function GraphArea({
         />
       </div>
 
-      {/* Divisor + Painel de Fase (apenas em modo transferencia) */}
+      {/* Resizable splitter + Phase panel (transfer mode only) */}
       {isTransfer && (
         <>
-          <div className="h-px bg-border-default shrink-0" />
-          <div className="relative min-h-0 bg-bg-canvas" style={{ flex: "0 0 35%" }}>
+          <div className="splitter-handle vertical" onMouseDown={onMouseDown} />
+          <div className="relative min-h-0 bg-bg-canvas" style={{ flex: `0 0 ${(1 - ratio) * 100}%` }}>
             <div className="absolute top-1.5 left-14 z-10 hud-text text-[9px] text-text-dim tracking-wider pointer-events-none">
               FASE -- graus
             </div>

@@ -11,6 +11,9 @@ interface HeaderProps {
   cursorDb: string;
   toolsOpen?: boolean;
   onToggleTools?: () => void;
+  academyOpen?: boolean;
+  onToggleAcademy?: () => void;
+  onOpenWizard?: () => void;
 }
 
 export default function Header({
@@ -24,6 +27,9 @@ export default function Header({
   cursorDb,
   toolsOpen,
   onToggleTools,
+  academyOpen,
+  onToggleAcademy,
+  onOpenWizard,
 }: HeaderProps) {
   return (
     <header className="flex items-center h-8 bg-bg-panel border-b border-border-default select-none shrink-0 px-1">
@@ -75,12 +81,36 @@ export default function Header({
         </div>
       </div>
 
-      {/* Right status + tools + save */}
+      {/* Right status + academy + tools + wizard + save */}
       <div className="flex items-center gap-1.5">
         <div className="flex items-center gap-1 mr-1">
           <div className={`w-1.5 h-1.5 rounded-full ${running ? "bg-success animate-pulse" : "bg-danger"}`} />
           <span className="hud-text text-[9px] text-text-dim">{fps} fps</span>
         </div>
+
+        {/* Wizard / Help trigger */}
+        {onOpenWizard && (
+          <button
+            onClick={onOpenWizard}
+            className="btn-hardware w-7 h-6 rounded text-xs"
+            title="Assistente passo-a-passo"
+          >
+            <span className="material-symbols-outlined text-[16px]">help_outline</span>
+          </button>
+        )}
+
+        {/* Academy toggle */}
+        {onToggleAcademy && (
+          <button
+            onClick={onToggleAcademy}
+            className={`btn-hardware w-7 h-6 rounded text-xs ${academyOpen ? "text-accent bg-accent/10" : ""}`}
+            title={academyOpen ? "Fechar Academy" : "Abrir Academy"}
+          >
+            <span className="material-symbols-outlined text-[16px]">school</span>
+          </button>
+        )}
+
+        {/* Tools toggle */}
         {onToggleTools && (
           <button
             onClick={onToggleTools}

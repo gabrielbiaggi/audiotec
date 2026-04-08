@@ -15,6 +15,8 @@ import {
   AVERAGING_OPTIONS,
   SAMPLE_RATES,
 } from "../types";
+import DropdownMenu from "./ui/DropdownMenu";
+import HelpTooltip from "./ui/HelpTooltip";
 
 interface ControlBarProps {
   // Engine state
@@ -69,6 +71,7 @@ export default function ControlBar({
       {/* ── Engine controls ── */}
       <BarGroup>
         <button
+          data-help="start"
           onClick={running ? onStop : onStart}
           className={`px-4 py-1 rounded font-bold text-white tracking-wide transition-colors
             ${running
@@ -85,7 +88,9 @@ export default function ControlBar({
       {/* ── Device selector ── */}
       <BarGroup>
         <BarLabel>Device</BarLabel>
+        <HelpTooltip tooltipKey="sampleRate" />
         <select
+          data-help="device"
           value={selectedDevice}
           onChange={(e) => onDeviceChange(e.target.value)}
           disabled={running}
@@ -128,10 +133,12 @@ export default function ControlBar({
 
       <Divider />
 
-      {/* ── Signal Generator (placeholder) ── */}
+      {/* ── Signal Generator ── */}
       <BarGroup>
         <BarLabel>Signal</BarLabel>
+        <HelpTooltip tooltipKey="signalGenerator" />
         <select
+          data-help="signal-gen"
           className="bg-bg-surface text-text-primary border border-border-default rounded
                      px-2 py-0.5 text-[11px] min-w-[72px] outline-none"
           defaultValue="off"
@@ -145,50 +152,59 @@ export default function ControlBar({
 
       <Divider />
 
-      {/* ── Analysis Config ── */}
-      <BarGroup>
-        <BarLabel>FFT</BarLabel>
-        <select
-          value={fftSize}
-          onChange={(e) => onFftSizeChange(Number(e.target.value))}
-          disabled={running}
-          className="bg-bg-surface text-text-primary border border-border-default rounded
-                     px-2 py-0.5 text-[11px] min-w-[56px] outline-none
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {FFT_SIZES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-
-        <BarLabel>Win</BarLabel>
-        <select
-          value={windowType}
-          onChange={(e) => onWindowTypeChange(e.target.value)}
-          disabled={running}
-          className="bg-bg-surface text-text-primary border border-border-default rounded
-                     px-2 py-0.5 text-[11px] min-w-[80px] outline-none
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {WINDOW_TYPES.map((w) => (
-            <option key={w} value={w}>{w}</option>
-          ))}
-        </select>
-
-        <BarLabel>Avg</BarLabel>
-        <select
-          value={numAverages}
-          onChange={(e) => onNumAveragesChange(Number(e.target.value))}
-          disabled={running}
-          className="bg-bg-surface text-text-primary border border-border-default rounded
-                     px-2 py-0.5 text-[11px] min-w-[48px] outline-none
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {AVERAGING_OPTIONS.map((n) => (
-            <option key={n} value={n}>{n === 1 ? "Off" : `${n}×`}</option>
-          ))}
-        </select>
-      </BarGroup>
+      {/* ── Analysis Config (grouped in dropdown) ── */}
+      <DropdownMenu label="Análise ⚙">
+        <div className="flex flex-col gap-2 min-w-[220px]">
+          <div className="flex items-center gap-2">
+            <BarLabel>FFT</BarLabel>
+            <HelpTooltip tooltipKey="fftSize" />
+            <select
+              value={fftSize}
+              onChange={(e) => onFftSizeChange(Number(e.target.value))}
+              disabled={running}
+              className="bg-bg-surface text-text-primary border border-border-default rounded
+                         px-2 py-0.5 text-[11px] flex-1 outline-none
+                         disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {FFT_SIZES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <BarLabel>Win</BarLabel>
+            <HelpTooltip tooltipKey="windowType" />
+            <select
+              value={windowType}
+              onChange={(e) => onWindowTypeChange(e.target.value)}
+              disabled={running}
+              className="bg-bg-surface text-text-primary border border-border-default rounded
+                         px-2 py-0.5 text-[11px] flex-1 outline-none
+                         disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {WINDOW_TYPES.map((w) => (
+                <option key={w} value={w}>{w}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <BarLabel>Avg</BarLabel>
+            <HelpTooltip tooltipKey="averaging" />
+            <select
+              value={numAverages}
+              onChange={(e) => onNumAveragesChange(Number(e.target.value))}
+              disabled={running}
+              className="bg-bg-surface text-text-primary border border-border-default rounded
+                         px-2 py-0.5 text-[11px] flex-1 outline-none
+                         disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {AVERAGING_OPTIONS.map((n) => (
+                <option key={n} value={n}>{n === 1 ? "Off" : `${n}×`}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </DropdownMenu>
 
       <Divider />
 
@@ -209,9 +225,11 @@ export default function ControlBar({
         ))}
       </BarGroup>
 
-      {/* ── Delay Finder (placeholder) ── */}
+      {/* ── Delay Finder ── */}
       <div className="ml-auto flex items-center gap-2">
+        <HelpTooltip tooltipKey="delayFinder" align="right" />
         <button
+          data-help="delay-finder"
           className="px-2.5 py-0.5 rounded border border-border-default text-text-dim
                      hover:text-text-secondary hover:bg-bg-elevated transition-colors font-semibold"
         >
