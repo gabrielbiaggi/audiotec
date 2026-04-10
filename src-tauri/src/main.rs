@@ -3,6 +3,7 @@ mod auto_eq;
 mod dsp;
 mod osc_client;
 mod room_modes;
+mod session_manager;
 mod simulation;
 mod spatial_average;
 mod wave_calc;
@@ -13,7 +14,7 @@ use std::time::Duration;
 use audio_engine::{AudioDeviceInfo, AudioEngine, EngineConfig, SpectrumData};
 use crossbeam_channel::Receiver;
 use simulation::{SimConfig, SimulationEngine};
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager};
 
 /// Application state managed by Tauri.
 struct AppState {
@@ -146,12 +147,14 @@ fn calculate_room_modes(req: room_modes::RoomModesRequest) -> room_modes::RoomMo
 
 // ─── Spatial Average Commands ───────────────────────────────────────────
 
-/// Power-averages multiple stored measurements into a single trace.
+/// Coherence-weighted power average of multiple stored measurements.
+/// Accepts an optional SpatialAverageConfig for blanking threshold and weighting mode.
 #[tauri::command]
 fn compute_spatial_average(
     traces: Vec<spatial_average::StoredTrace>,
+    config: Option<spatial_average::SpatialAverageConfig>,
 ) -> Result<spatial_average::SpatialAverageResult, String> {
-    spatial_average::compute(&traces).map_err(|e| e.to_string())
+    spatial_average::compute(&traces, config.as_ref())
 }
 
 // ─── Auto-EQ Commands ───────────────────────────────────────────────────
@@ -265,6 +268,51 @@ async fn spectrum_forwarder(app: AppHandle, rx: Receiver<SpectrumData>) {
     }
 }
 
+// ─── Session Commands ───────────────────────────────────────────────────
+
+#[tauri::command]
+fn save_session(
+    app: AppHandle,
+    data: session_manager::SessionData,
+) -> Result<String, String> {
+    let data_dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Cannot resolve app data dir: {e}"))?;
+    let sessions_dir = data_dir.join("sessions");
+    session_manager::save(&sessions_dir, &data)
+}
+
+#[tauri::command]
+fn load_session(app: AppHandle, name: String) -> Result<session_manager::SessionData, String> {
+    let data_dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Cannot resolve app data dir: {e}"))?;
+    let sessions_dir = data_dir.join("sessions");
+    session_manager::load(&sessions_dir, &name)
+}
+
+#[tauri::command]
+fn list_sessions(app: AppHandle) -> Result<Vec<session_manager::SessionInfo>, String> {
+    let data_dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Cannot resolve app data dir: {e}"))?;
+    let sessions_dir = data_dir.join("sessions");
+    session_manager::list(&sessions_dir)
+}
+
+#[tauri::command]
+fn delete_session(app: AppHandle, name: String) -> Result<(), String> {
+    let data_dir = app
+        .path()
+        .app_data_dir()
+        .map_err(|e| format!("Cannot resolve app data dir: {e}"))?;
+    let sessions_dir = data_dir.join("sessions");
+    session_manager::delete(&sessions_dir, &name)
+}
+
 // ─── Entry point ────────────────────────────────────────────────────────
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -298,6 +346,10 @@ pub fn run() {
             osc_disconnect,
             osc_status,
             osc_push_eq,
+            save_session,
+            load_session,
+            list_sessions,
+            delete_session,
         ])
         .run(tauri::generate_context!())
         .expect("error while running AudioTec");

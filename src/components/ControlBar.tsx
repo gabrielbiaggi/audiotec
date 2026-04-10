@@ -79,7 +79,7 @@ export default function ControlBar({
               : "bg-accent hover:bg-accent-hover"
             }`}
         >
-          {running ? "■ Stop" : "▶ Start"}
+          {running ? "■ Parar" : "▶ Iniciar"}
         </button>
       </BarGroup>
 
@@ -87,7 +87,7 @@ export default function ControlBar({
 
       {/* ── Device selector ── */}
       <BarGroup>
-        <BarLabel>Device</BarLabel>
+        <BarLabel>Disposit.</BarLabel>
         <HelpTooltip tooltipKey="sampleRate" />
         <select
           data-help="device"
@@ -103,7 +103,7 @@ export default function ControlBar({
               [{d.host}] {d.name} ({d.maxChannels}ch)
             </option>
           ))}
-          {devices.length === 0 && <option>No devices found</option>}
+          {devices.length === 0 && <option>Nenhum dispositivo</option>}
         </select>
       </BarGroup>
 
@@ -111,7 +111,7 @@ export default function ControlBar({
 
       {/* ── Sample Rate ── */}
       <BarGroup>
-        <BarLabel>Rate</BarLabel>
+        <BarLabel>Taxa</BarLabel>
         <select
           value={sampleRate}
           onChange={(e) => onSampleRateChange(Number(e.target.value))}
@@ -135,7 +135,7 @@ export default function ControlBar({
 
       {/* ── Signal Generator ── */}
       <BarGroup>
-        <BarLabel>Signal</BarLabel>
+        <BarLabel>Sinal</BarLabel>
         <HelpTooltip tooltipKey="signalGenerator" />
         <select
           data-help="signal-gen"
@@ -143,10 +143,10 @@ export default function ControlBar({
                      px-2 py-0.5 text-[11px] min-w-[72px] outline-none"
           defaultValue="off"
         >
-          <option value="off">Off</option>
-          <option value="pink">Pink Noise</option>
-          <option value="white">White Noise</option>
-          <option value="sine">Sine</option>
+          <option value="off">Desl.</option>
+          <option value="pink">Ruído Rosa</option>
+          <option value="white">Ruído Branco</option>
+          <option value="sine">Senoidal</option>
         </select>
       </BarGroup>
 
@@ -172,7 +172,7 @@ export default function ControlBar({
             </select>
           </div>
           <div className="flex items-center gap-2">
-            <BarLabel>Win</BarLabel>
+            <BarLabel>Janela</BarLabel>
             <HelpTooltip tooltipKey="windowType" />
             <select
               value={windowType}
@@ -188,7 +188,7 @@ export default function ControlBar({
             </select>
           </div>
           <div className="flex items-center gap-2">
-            <BarLabel>Avg</BarLabel>
+            <BarLabel>Média</BarLabel>
             <HelpTooltip tooltipKey="averaging" />
             <select
               value={numAverages}
@@ -199,7 +199,7 @@ export default function ControlBar({
                          disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {AVERAGING_OPTIONS.map((n) => (
-                <option key={n} value={n}>{n === 1 ? "Off" : `${n}×`}</option>
+                <option key={n} value={n}>{n === 1 ? "Desl." : `${n}×`}</option>
               ))}
             </select>
           </div>
@@ -220,7 +220,7 @@ export default function ControlBar({
                 : "text-text-dim border border-transparent hover:text-text-secondary hover:bg-bg-elevated"
               }`}
           >
-            {m === "spectrum" ? "Spec" : m === "transfer" ? "TF" : "Phase"}
+            {m === "spectrum" ? "Mag" : m === "transfer" ? "TF" : "Fase"}
           </button>
         ))}
       </BarGroup>
@@ -233,7 +233,7 @@ export default function ControlBar({
           className="px-2.5 py-0.5 rounded border border-border-default text-text-dim
                      hover:text-text-secondary hover:bg-bg-elevated transition-colors font-semibold"
         >
-          Delay Finder
+          Buscar Atraso
         </button>
       </div>
     </div>

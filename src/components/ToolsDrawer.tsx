@@ -52,31 +52,31 @@ export default function ToolsDrawer({
   if (!open) return null;
 
   return (
-    <aside className="flex flex-col w-72 shrink-0 bg-bg-panel border-l border-border-default select-none">
+    <aside className="flex flex-col w-full h-full bg-[#0F0F0F] select-none">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-1.5 border-b border-border-default">
-        <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-text-dim">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800/50">
+        <span className="text-[11px] font-sans font-semibold uppercase tracking-[0.15em] text-zinc-500">
           Ferramentas
         </span>
         <button
           onClick={onClose}
-          className="btn-hardware w-6 h-5 rounded text-xs"
+          className="w-7 h-7 flex items-center justify-center rounded-md text-zinc-500 hover:text-zinc-300 transition-colors"
           title="Fechar ferramentas"
         >
-          <span className="material-symbols-outlined text-[14px]">close</span>
+          <span className="material-symbols-outlined text-[16px]">close</span>
         </button>
       </div>
 
       {/* Tab bar */}
-      <div className="flex border-b border-border-default">
+      <div className="flex border-b border-zinc-800/50">
         {TABS.map(({ key, icon, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 text-[8px] transition-colors
+            className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] transition-colors
               ${tab === key
-                ? "text-primary bg-bg-elevated/50"
-                : "text-text-dim hover:text-text-secondary"
+                ? "text-[#00e5ff] bg-zinc-800/30"
+                : "text-zinc-600 hover:text-zinc-400"
               }`}
           >
             <span className="material-symbols-outlined text-[14px]">{icon}</span>

@@ -71,7 +71,7 @@ export default function Sidebar({
       <div className="px-2 py-2 border-b border-border-default">
         <button className="w-full py-1.5 rounded text-[10px] font-bold tracking-wider bg-primary text-black hover:bg-primary/90 transition-colors">
           <span className="material-symbols-outlined text-[14px] align-middle mr-1">fiber_manual_record</span>
-          CAPTURE
+          CAPTURAR
           <span className="text-[8px] font-mono ml-1 opacity-60">[SPACE]</span>
         </button>
       </div>
@@ -102,7 +102,7 @@ export default function Sidebar({
               <button
                 onClick={() => toggleSlotVisibility(slot.id)}
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
-                title={slot.visible ? "Hide" : "Show"}
+                title={slot.visible ? "Ocultar" : "Mostrar"}
               >
                 <span className="material-symbols-outlined text-[12px] text-text-dim hover:text-text-secondary">
                   {slot.visible ? "visibility" : "visibility_off"}
@@ -110,7 +110,7 @@ export default function Sidebar({
               </button>
               <button
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
-                title="Remove"
+                title="Remover"
               >
                 <span className="material-symbols-outlined text-[12px] text-text-dim hover:text-danger">
                   close

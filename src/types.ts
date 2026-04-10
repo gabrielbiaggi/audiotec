@@ -81,11 +81,11 @@ export const TRANSFER_DB_MAX = 30;
 export const PHASE_MIN = -180;
 export const PHASE_MAX = 180;
 
-// Canvas padding for axis labels
-export const PAD_LEFT = 52;
-export const PAD_RIGHT = 14;
-export const PAD_TOP = 8;
-export const PAD_BOTTOM = 24;
+// Canvas padding for axis labels (compact — pro-audio density)
+export const PAD_LEFT = 38;
+export const PAD_RIGHT = 8;
+export const PAD_TOP = 4;
+export const PAD_BOTTOM = 18;
 
 // ─── Simulation config ──────────────────────────────────────────────
 

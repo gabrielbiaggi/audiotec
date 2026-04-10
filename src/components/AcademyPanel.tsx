@@ -47,7 +47,7 @@ export default function AcademyPanel({ onClose, onOpenWizard }: AcademyPanelProp
       <div className="flex items-center justify-between px-3 py-2 border-b border-border-default">
         <div className="flex items-center gap-2">
           <span className="text-accent text-sm">📘</span>
-          <span className="text-[12px] font-bold text-text-primary">Academy</span>
+          <span className="text-[12px] font-bold text-text-primary">Academia</span>
         </div>
         <button
           onClick={onClose}

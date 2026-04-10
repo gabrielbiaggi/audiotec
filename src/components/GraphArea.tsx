@@ -20,6 +20,8 @@ interface GraphAreaProps {
   showRef: boolean;
   showMeas: boolean;
   showCoherence: boolean;
+  /** Coherence blanking threshold (0.0–1.0). Default 0.2 (20 %). */
+  coherenceThreshold?: number;
   running: boolean;
   onFpsUpdate: (fps: number) => void;
 }
@@ -48,6 +50,7 @@ export default function GraphArea({
   showRef,
   showMeas,
   showCoherence,
+  coherenceThreshold = 0.2,
   running,
   onFpsUpdate,
 }: GraphAreaProps) {
@@ -58,43 +61,44 @@ export default function GraphArea({
   return (
     <div ref={containerRef} className="flex flex-col flex-1 min-w-0 min-h-0 relative">
 
-      {/* HUD: caixa de informacoes (topo-esquerda) */}
-      <div className="absolute top-2 left-14 z-20 pointer-events-none">
-        <div className="bg-black/70 border border-zinc-800 rounded px-2.5 py-1.5 backdrop-blur-sm">
-          <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0 hud-text text-[9px]">
-            <span className="text-zinc-500">FREQ</span>
-            <span className="text-primary">{cursorInfo.freq}</span>
-            <span className="text-zinc-500">MAG</span>
-            <span className="text-zinc-300">{cursorInfo.mag}</span>
-            <span className="text-zinc-500">FASE</span>
-            <span className="text-secondary">{cursorInfo.phase}</span>
-            <span className="text-zinc-500">COE</span>
-            <span className="text-danger">{cursorInfo.coh}</span>
+      {/* HUD: cursor info overlay (top-left) */}
+      <div className="absolute top-2 left-12 z-20 pointer-events-none">
+        <div className="bg-black/70 backdrop-blur-sm border border-zinc-800/40 rounded px-3 py-1.5">
+          <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 font-mono text-xs">
+            <span className="text-zinc-500 text-[10px] uppercase">Freq</span>
+            <span className="text-[#00e5ff] tabular-nums">{cursorInfo.freq}</span>
+            <span className="text-zinc-500 text-[10px] uppercase">Mag</span>
+            <span className="text-zinc-300 tabular-nums">{cursorInfo.mag}</span>
+            <span className="text-zinc-500 text-[10px] uppercase">Fase</span>
+            <span className="text-amber-400 tabular-nums">{cursorInfo.phase}</span>
+            <span className="text-zinc-500 text-[10px] uppercase">Coer</span>
+            <span className="text-red-400 tabular-nums">{cursorInfo.coh}</span>
           </div>
         </div>
       </div>
 
-      {/* Badge RTA AO VIVO (topo-direita) */}
+      {/* LIVE badge (top-right) */}
       {running && (
         <div className="absolute top-2 right-3 z-20 pointer-events-none flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shadow-[0_0_4px_#16a34a]" />
-          <span className="hud-text text-[9px] font-bold text-success tracking-wider">RTA AO VIVO</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <span className="font-mono text-xs font-bold text-green-500 tracking-wider">LIVE</span>
         </div>
       )}
 
-      {/* Rotulo HUD do modo atual */}
-      <div className="absolute top-1.5 left-14 z-10 hud-text text-[9px] text-text-dim tracking-wider pointer-events-none mt-8">
+      {/* View mode label */}
+      <div className="absolute top-12 left-12 z-10 font-mono text-[10px] text-zinc-600 uppercase tracking-wider pointer-events-none">
         {viewLabel(viewMode)}
       </div>
 
       {/* Main panel (Magnitude) */}
-      <div className="relative min-h-0 bg-bg-canvas" style={{ flex: isTransfer ? `0 0 ${ratio * 100}%` : "1 1 100%" }}>
+      <div className="relative min-h-0 bg-[#0A0A0A]" style={{ flex: isTransfer ? `0 0 ${ratio * 100}%` : "1 1 100%" }}>
         <AnalyzerCanvas
           spectrumRef={spectrumRef}
           viewMode={isTransfer ? "transfer" : resolveCanvasMode(viewMode)}
           showRef={showRef}
           showMeas={showMeas}
           showCoherence={showCoherence}
+          coherenceThreshold={coherenceThreshold}
           onFpsUpdate={onFpsUpdate}
         />
       </div>
@@ -103,9 +107,9 @@ export default function GraphArea({
       {isTransfer && (
         <>
           <div className="splitter-handle vertical" onMouseDown={onMouseDown} />
-          <div className="relative min-h-0 bg-bg-canvas" style={{ flex: `0 0 ${(1 - ratio) * 100}%` }}>
-            <div className="absolute top-1.5 left-14 z-10 hud-text text-[9px] text-text-dim tracking-wider pointer-events-none">
-              FASE -- graus
+          <div className="relative min-h-0 bg-[#0A0A0A]" style={{ flex: `0 0 ${(1 - ratio) * 100}%` }}>
+            <div className="absolute top-2 left-12 z-10 font-mono text-[10px] text-zinc-600 uppercase tracking-wider pointer-events-none">
+              FASE — graus
             </div>
             <AnalyzerCanvas
               spectrumRef={spectrumRef}
@@ -113,6 +117,7 @@ export default function GraphArea({
               showRef={false}
               showMeas={false}
               showCoherence={showCoherence}
+              coherenceThreshold={coherenceThreshold}
               onFpsUpdate={() => {}}
             />
           </div>

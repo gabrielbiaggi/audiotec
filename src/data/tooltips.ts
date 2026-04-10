@@ -19,13 +19,13 @@ export const TOOLTIPS: Record<string, TooltipDef> = {
   },
   phaseWrap: {
     id: "phaseWrap",
-    title: "Phase Wrap",
+    title: "Enrolamento de Fase",
     short: "Quando a fase ultrapassa +180° ou -180°, ela 'dá a volta'. Isso é normal — representa o atraso entre referência e medição.",
     detail: "Se você ver a fase girando rapidamente, significa que há um atraso (delay) não compensado entre o sinal de referência e o medido. Use o Delay Finder para corrigir.",
   },
   delayFinder: {
     id: "delayFinder",
-    title: "Delay Finder",
+    title: "Busca de Atraso (Delay Finder)",
     short: "Encontra automaticamente o atraso entre o sinal de referência e o medido pelo microfone. Essencial para alinhar subs com PA.",
     detail: "O Delay Finder calcula a Resposta ao Impulso (IR) e encontra o pico principal. A distância em milissegundos corresponde ao tempo que o som leva para chegar da caixa ao microfone.",
   },

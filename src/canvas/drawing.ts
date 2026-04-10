@@ -67,9 +67,18 @@ export function plotRect(w: number, h: number) {
 
 // ─── Grid drawing ───────────────────────────────────────────────────
 
-const FREQ_LINES = [20, 31.5, 50, 63, 100, 125, 200, 250, 500, 1000, 2000, 4000, 8000, 10000, 16000, 20000];
-const FREQ_LABELS = new Set([20, 50, 100, 250, 500, 1000, 2000, 4000, 8000, 16000, 20000]);
-const FREQ_MAJOR = new Set([20, 100, 1000, 10000]);
+/** Sub-decade lines for the log-frequency grid (1/3 octave spacing). */
+const FREQ_SUBDECADE = [
+  20, 25, 31.5, 40, 50, 63, 80,
+  100, 125, 160, 200, 250, 315, 400,
+  500, 630, 800,
+  1000, 1250, 1600, 2000, 2500, 3150, 4000,
+  5000, 6300, 8000, 10000, 12500, 16000, 20000,
+];
+/** Labels shown on the X-axis — the standard pro-audio decade set. */
+const FREQ_LABELS = new Set([20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]);
+/** Major (brighter) decade lines. */
+const FREQ_MAJOR = new Set([100, 1000, 10000]);
 
 export function drawFreqDbGrid(
   ctx: CanvasRenderingContext2D,
@@ -78,22 +87,25 @@ export function drawFreqDbGrid(
 ) {
   ctx.save();
 
-  // Frequency vertical lines
-  ctx.font = "9px var(--font-mono, monospace)";
+  // Frequency vertical lines (logarithmic)
+  ctx.font = "8px var(--font-mono, monospace)";
   ctx.textAlign = "center";
 
-  for (const f of FREQ_LINES) {
+  for (const f of FREQ_SUBDECADE) {
     const x = px + freqToX(f, pw);
-    ctx.strokeStyle = FREQ_MAJOR.has(f) ? GRID_MAJOR : GRID;
-    ctx.lineWidth = 1;
+    const isMajor = FREQ_MAJOR.has(f);
+    const isLabel = FREQ_LABELS.has(f);
+    ctx.strokeStyle = isMajor ? GRID_MAJOR : GRID;
+    ctx.lineWidth = isMajor ? 1 : 0.5;
     ctx.beginPath();
     ctx.moveTo(x, py);
     ctx.lineTo(x, py + ph);
     ctx.stroke();
 
-    if (FREQ_LABELS.has(f)) {
-      ctx.fillStyle = GRID_TEXT;
-      ctx.fillText(f >= 1000 ? `${f / 1000}k` : `${f}`, x, py + ph + 15);
+    if (isLabel) {
+      ctx.fillStyle = isMajor ? TEXT_MID : GRID_TEXT;
+      const label = f >= 1000 ? `${f / 1000}k` : `${f}`;
+      ctx.fillText(label, x, py + ph + 12);
     }
   }
 
@@ -103,24 +115,14 @@ export function drawFreqDbGrid(
     const y = py + valToY(db, ph, dbMin, dbMax);
     const isZero = db === 0;
     ctx.strokeStyle = isZero ? GRID_MAJOR : GRID;
-    ctx.lineWidth = isZero ? 1.5 : 1;
+    ctx.lineWidth = isZero ? 1.5 : 0.5;
     ctx.beginPath();
     ctx.moveTo(px, y);
     ctx.lineTo(px + pw, y);
     ctx.stroke();
     ctx.fillStyle = isZero ? TEXT_MID : GRID_TEXT;
-    ctx.fillText(`${db}`, px - 6, y + 3);
+    ctx.fillText(`${db}`, px - 4, y + 3);
   }
-
-  // Y-axis label
-  ctx.fillStyle = GRID_TEXT;
-  ctx.font = "8px var(--font-mono, monospace)";
-  ctx.textAlign = "center";
-  ctx.save();
-  ctx.translate(11, py + ph / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillText("dBFS", 0, 0);
-  ctx.restore();
 
   ctx.restore();
 }
@@ -131,20 +133,23 @@ export function drawFreqPhaseGrid(
 ) {
   ctx.save();
 
-  const labelFreqs = [20, 50, 100, 250, 500, 1000, 2000, 4000, 8000, 16000, 20000];
-  ctx.font = "9px var(--font-mono, monospace)";
+  ctx.font = "8px var(--font-mono, monospace)";
   ctx.textAlign = "center";
-  ctx.strokeStyle = GRID;
-  ctx.lineWidth = 1;
 
-  for (const f of labelFreqs) {
+  for (const f of FREQ_SUBDECADE) {
     const x = px + freqToX(f, pw);
+    const isMajor = FREQ_MAJOR.has(f);
+    const isLabel = FREQ_LABELS.has(f);
+    ctx.strokeStyle = isMajor ? GRID_MAJOR : GRID;
+    ctx.lineWidth = isMajor ? 1 : 0.5;
     ctx.beginPath();
     ctx.moveTo(x, py);
     ctx.lineTo(x, py + ph);
     ctx.stroke();
-    ctx.fillStyle = GRID_TEXT;
-    ctx.fillText(f >= 1000 ? `${f / 1000}k` : `${f}`, x, py + ph + 15);
+    if (isLabel) {
+      ctx.fillStyle = isMajor ? TEXT_MID : GRID_TEXT;
+      ctx.fillText(f >= 1000 ? `${f / 1000}k` : `${f}`, x, py + ph + 12);
+    }
   }
 
   // Phase horizontal lines (every 45°)
@@ -153,55 +158,179 @@ export function drawFreqPhaseGrid(
     const y = py + valToY(deg, ph, PHASE_MIN, PHASE_MAX);
     const isZero = deg === 0;
     ctx.strokeStyle = isZero ? GRID_MAJOR : GRID;
-    ctx.lineWidth = isZero ? 1.5 : 1;
+    ctx.lineWidth = isZero ? 1.5 : 0.5;
     ctx.beginPath();
     ctx.moveTo(px, y);
     ctx.lineTo(px + pw, y);
     ctx.stroke();
     ctx.fillStyle = isZero ? TEXT_MID : GRID_TEXT;
-    ctx.fillText(`${deg}°`, px - 6, y + 3);
+    ctx.fillText(`${deg}°`, px - 4, y + 3);
   }
-
-  // Y-axis label
-  ctx.fillStyle = GRID_TEXT;
-  ctx.font = "8px var(--font-mono, monospace)";
-  ctx.textAlign = "center";
-  ctx.save();
-  ctx.translate(11, py + ph / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.fillText("deg", 0, 0);
-  ctx.restore();
 
   ctx.restore();
 }
 
 // ─── Data curves ────────────────────────────────────────────────────
 
-/** Draw a single frequency-domain curve (generic: mag, phase, etc.) */
+/**
+ * Draw a single frequency-domain curve (generic: mag, transfer, etc.).
+ *
+ * When `coherence` + `coherenceThreshold` are provided, bins where γ² falls
+ * below the threshold are drawn with 30 % opacity and a dashed stroke,
+ * giving the operator an immediate visual cue that the data is unreliable
+ * ("coherence blanking" — standard Smaart / SATlive behaviour).
+ */
 export function drawCurve(
   ctx: CanvasRenderingContext2D,
   px: number, py: number, pw: number, ph: number,
   frequencies: ArrayLike<number>, values: ArrayLike<number>,
   color: string, lineWidth: number,
   vMin: number, vMax: number,
+  coherence?: ArrayLike<number>,
+  coherenceThreshold?: number,
 ) {
   if (!frequencies.length) return;
   ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
   ctx.lineJoin = "round";
-  ctx.beginPath();
 
+  const hasCoh = coherence != null && coherence.length >= frequencies.length;
+  const threshold = coherenceThreshold ?? 0.2;
+
+  if (!hasCoh) {
+    // Fast path — no coherence blanking
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i < frequencies.length; i++) {
+      const f = frequencies[i];
+      if (f < FREQ_MIN || f > FREQ_MAX) continue;
+      const x = px + freqToX(f, pw);
+      const y = py + valToY(values[i], ph, vMin, vMax);
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  } else {
+    // Coherence-blanked path: low-γ² bins drawn dimmed + dashed
+    let prevBlanked: boolean | null = null;
+
+    const applyStyle = (blanked: boolean) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.globalAlpha = blanked ? 0.3 : 1.0;
+      ctx.setLineDash(blanked ? [5, 5] : []);
+    };
+
+    for (let i = 0; i < frequencies.length; i++) {
+      const f = frequencies[i];
+      if (f < FREQ_MIN || f > FREQ_MAX) continue;
+      const x = px + freqToX(f, pw);
+      const y = py + valToY(values[i], ph, vMin, vMax);
+      const blanked = coherence[i] < threshold;
+
+      if (prevBlanked === null) {
+        applyStyle(blanked);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      } else if (blanked !== prevBlanked) {
+        // Transition — finish current segment at this point, then switch style
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        applyStyle(blanked);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+      prevBlanked = blanked;
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1.0;
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Draw a phase curve with ±180° wrapping (sawtooth discontinuities)
+ * and optional coherence blanking.
+ *
+ * Phase unwrapping: when the phase jumps > 180° between bins the line
+ * breaks with `moveTo()` instead of drawing a vertical wrap line —
+ * standard behaviour in Smaart, REW and SATlive.
+ *
+ * Coherence blanking: when `coherence` + `coherenceThreshold` are supplied,
+ * bins where γ² < threshold are drawn at 30 % opacity with a dashed stroke.
+ */
+export function drawPhaseWrapped(
+  ctx: CanvasRenderingContext2D,
+  px: number, py: number, pw: number, ph: number,
+  frequencies: ArrayLike<number>, phase: ArrayLike<number>,
+  color: string, lineWidth: number,
+  coherence?: ArrayLike<number>,
+  coherenceThreshold?: number,
+) {
+  if (!frequencies.length) return;
+  ctx.save();
+  ctx.lineJoin = "round";
+
+  const hasCoh = coherence != null && coherence.length >= frequencies.length;
+  const threshold = coherenceThreshold ?? 0.2;
+
+  let prevPhase = NaN;
+  let prevBlanked: boolean | null = null;
   let started = false;
+
+  const applyStyle = (blanked: boolean) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.globalAlpha = blanked ? 0.3 : 1.0;
+    ctx.setLineDash(blanked ? [5, 5] : []);
+  };
+
+  // Default style when no coherence is provided
+  if (!hasCoh) applyStyle(false);
+
+  ctx.beginPath();
   for (let i = 0; i < frequencies.length; i++) {
     const f = frequencies[i];
     if (f < FREQ_MIN || f > FREQ_MAX) continue;
     const x = px + freqToX(f, pw);
-    const y = py + valToY(values[i], ph, vMin, vMax);
-    if (!started) { ctx.moveTo(x, y); started = true; }
-    else ctx.lineTo(x, y);
+    let ph_deg = phase[i];
+    // Wrap into [-180, 180]
+    ph_deg = ((ph_deg + 180) % 360 + 360) % 360 - 180;
+
+    const y = py + valToY(ph_deg, ph, PHASE_MIN, PHASE_MAX);
+    const blanked = hasCoh ? coherence![i] < threshold : false;
+
+    if (!started) {
+      if (hasCoh) applyStyle(blanked);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      started = true;
+    } else {
+      const phaseWrap = Math.abs(ph_deg - prevPhase) > 180;
+      const styleChange = hasCoh && blanked !== prevBlanked;
+
+      if (phaseWrap || styleChange) {
+        // Connect to the transition point before flushing (unless phase-wrap)
+        if (!phaseWrap) ctx.lineTo(x, y);
+        ctx.stroke();
+        if (styleChange) applyStyle(blanked);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+    prevPhase = ph_deg;
+    prevBlanked = blanked;
   }
   ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1.0;
   ctx.restore();
 }
 
@@ -301,7 +430,7 @@ export function drawCursor(
     valLabel = `${db.toFixed(1)} dB`;
   }
 
-  const freqLabel = freq >= 1000 ? `${(freq / 1000).toFixed(2)}k` : `${freq.toFixed(1)}`;
+  const freqLabel = freq >= 1000 ? `${(freq / 1000).toFixed(2)}k` : `${freq.toFixed(0)}`;
   const text = `${freqLabel} Hz  ${valLabel}`;
 
   // Readout tooltip
@@ -337,6 +466,9 @@ export interface DrawOptions {
   showRef: boolean;
   showMeas: boolean;
   showCoherence: boolean;
+  /** Coherence blanking threshold (0.0–1.0). Bins with γ² below this
+   *  are drawn dimmed + dashed. Default 0.2 (20 %). */
+  coherenceThreshold: number;
   traceColors: {
     ref: string;
     meas: string;
@@ -388,12 +520,13 @@ export function renderFrame(
           opts.traceColors.meas, 2, SPECTRUM_DB_MIN, SPECTRUM_DB_MAX);
     } else if (opts.viewMode === "transfer") {
       drawCurve(ctx, px, py, pw, ph, data.frequencies, data.transferMagnitude,
-        opts.traceColors.transfer, 2, TRANSFER_DB_MIN, TRANSFER_DB_MAX);
+        opts.traceColors.transfer, 2, TRANSFER_DB_MIN, TRANSFER_DB_MAX,
+        data.coherence, opts.coherenceThreshold);
       if (opts.showCoherence)
         drawCoherenceFill(ctx, px, py, pw, ph, data.frequencies, data.coherence);
     } else {
-      drawCurve(ctx, px, py, pw, ph, data.frequencies, data.transferPhase,
-        opts.traceColors.phase, 1.5, PHASE_MIN, PHASE_MAX);
+      drawPhaseWrapped(ctx, px, py, pw, ph, data.frequencies, data.transferPhase,
+        opts.traceColors.phase, 1.5, data.coherence, opts.coherenceThreshold);
       if (opts.showCoherence)
         drawCoherenceFill(ctx, px, py, pw, ph, data.frequencies, data.coherence);
     }

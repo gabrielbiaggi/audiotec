@@ -16,6 +16,8 @@ interface AnalyzerCanvasProps {
   showRef: boolean;
   showMeas: boolean;
   showCoherence: boolean;
+  /** Coherence blanking threshold (0.0–1.0). Default 0.2 (20 %). */
+  coherenceThreshold?: number;
   onFpsUpdate: (fps: number) => void;
 }
 
@@ -33,6 +35,7 @@ export default function AnalyzerCanvas({
   showRef,
   showMeas,
   showCoherence,
+  coherenceThreshold = 0.2,
   onFpsUpdate,
 }: AnalyzerCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,6 +48,7 @@ export default function AnalyzerCanvas({
     showRef,
     showMeas,
     showCoherence,
+    coherenceThreshold,
     traceColors: COLORS,
   });
 
@@ -53,6 +57,7 @@ export default function AnalyzerCanvas({
   optsRef.current.showRef = showRef;
   optsRef.current.showMeas = showMeas;
   optsRef.current.showCoherence = showCoherence;
+  optsRef.current.coherenceThreshold = coherenceThreshold;
 
   // ── Cursor tracking (imperative, no state) ──
   useEffect(() => {
